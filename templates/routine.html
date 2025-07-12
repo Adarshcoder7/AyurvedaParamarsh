@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div style="padding: 20px;">
+    <h2>🧘 Daily Routine & Diet for <span style="color:green">{{ dosha }}</span></h2>
+    <ul>
+      <li><strong>🕒 Wake Up Time:</strong> {{ routine.wake }}</li>
+      <li><strong>🛌 Sleep Time:</strong> {{ routine.sleep }}</li>
+      <li><strong>🍽️ Food to Eat:</strong> {{ routine.food }}</li>
+      <li><strong>🚫 Avoid:</strong> {{ routine.avoid }}</li>
+      <li><strong>🧘 Tips:</strong> {{ routine.tips }}</li>
+    </ul>
+    <a href="/"><button>🏠 Home</button></a>
+  </div>
+{% endblock %}

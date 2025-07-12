@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ayurveda Paramarsh - Yoga Videos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom right, #fefbe9, #d6e5d8);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('/static/fi.webp') no-repeat center center fixed;
+      background-size: cover;
+      opacity: 0.10;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .container {
+      padding: 60px 40px;
+      position: relative;
+      z-index: 2;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      color: #1e3932;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    .video-card {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: rgba(255,255,255,0.95);
+    }
+
+    .video-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    }
+
+    .video-card iframe {
+      width: 100%;
+      height: 200px;
+      border: none;
+    }
+
+    .video-info {
+      padding: 15px;
+    }
+
+    .video-info h4 {
+      margin-bottom: 8px;
+      color: #2c3e50;
+    }
+
+    .video-info p {
+      font-size: 14px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="leavesCanvas"></canvas>
+
+<div class="container">
+  <h2>Yoga & Meditation</h2>
+
+<!-- 🔁 Back Button -->
+<div style="text-align: center; margin-bottom: 30px;">
+  <a href="/yoga">
+    <button style="
+      padding: 12px 25px;
+      background-color: #28a745;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    " onmouseover="this.style.backgroundColor='#218838'" onmouseout="this.style.backgroundColor='#28a745'">
+      Yoga Videos
+    </button>
+  </a>
+</div>
+
+  <div class="grid">
+    <div class="video-card">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/0S9kiADZHz0?si=SylCgLJUHcyI_nHm" title="Vata Yoga Routine" allowfullscreen></iframe>
+      <div class="video-info">
+        <h4>🌬️ Vata Yoga Routine</h4>
+        <p>Balance Vata dosha with calming movements.</p>
+      </div>
+    </div>
+<div class="video-card">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/axxWYtUZfL8?si=B2W0-4s8rcsxgOhZ" title="Surya Namaskar Energizing" allowfullscreen></iframe>
+  <div class="video-info">
+    <h4>Yoga for Acidity</h4>
+    <p>A complete energizing sequence for body and breath.</p>
+  </div>
+</div>
+<div class="video-card">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/MHVXnLe1t9g?si=r1SC1lY84HzHwYV1" title="Surya Namaskar Energizing" allowfullscreen></iframe>
+  <div class="video-info">
+    <h4>Hair Growth Yoga</h4>
+    <p>A complete energizing sequence for body and breath.</p>
+  </div>
+</div>
+
+    <div class="video-card">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/clT3Y64dRdQ?si=rn9Dy7a_CPUHTRLd" title="Pitta Cooling Yoga" allowfullscreen></iframe>
+      <div class="video-info">
+        <h4>🔥 Pitta Cooling Yoga</h4>
+        <p>Cool down heat and intensity of Pitta dosha.</p>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/zw42mXC-dOU?si=2YMXBrauB2Tg8ByF" title="Kapha Energizing Yoga" allowfullscreen></iframe>
+      <div class="video-info">
+        <h4>🌧️ Kapha Energizing Yoga</h4>
+        <p>Boost energy and lighten the Kapha body-mind.</p>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <iframe src="https://www.youtube.com/embed/Via_pfHgMPg?si=uZswSRZaH1vUeC6G" title="Surya Namaskar" allowfullscreen></iframe>
+      <div class="video-info">
+        <h4>☀️ Surya Namaskar</h4>
+        <p>A complete energizing sequence for body and breath.</p>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <iframe src="https://www.youtube.com/embed/ZToicYcHIOU" title="5-Minute Meditation" allowfullscreen></iframe>
+      <div class="video-info">
+        <h4>🙏 5-Minute Meditation</h4>
+        <p>Quick mindfulness practice to reset your day.</p>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <iframe src="https://www.youtube.com/embed/4pLUleLdwY4" title="Pranayama Breathing" allowfullscreen></iframe>
+      <div class="video-info">
+        <h4>🍃 Pranayama Breathing</h4>
+        <p>Simple breathing exercise for clarity and calm.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById('leavesCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const leaves = [];
+  for (let i = 0; i < 30; i++) {
+    leaves.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: 20 + Math.random() * 20,
+      speed: 0.3 + Math.random() * 0.5,
+      sway: 0.3 + Math.random() * 0.5,
+      swayDir: Math.random() > 0.5 ? 1 : -1,
+      emoji: '🌿'
+    });
+  }
+
+  function drawLeaves() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '24px serif';
+    for (let leaf of leaves) {
+      ctx.globalAlpha = 0.3;
+      ctx.fillText(leaf.emoji, leaf.x, leaf.y);
+      ctx.globalAlpha = 1.0;
+      leaf.y += leaf.speed;
+      leaf.x += leaf.sway * leaf.swayDir;
+      if (leaf.y > canvas.height) {
+        leaf.y = -leaf.size;
+        leaf.x = Math.random() * canvas.width;
+      }
+      if (leaf.x > canvas.width || leaf.x < 0) {
+        leaf.swayDir *= -1;
+      }
+    }
+    requestAnimationFrame(drawLeaves);
+  }
+
+  drawLeaves();
+
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+</script>
+
+</body>
+</html>

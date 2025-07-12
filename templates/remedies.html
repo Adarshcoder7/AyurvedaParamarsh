@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom right, #fefbe9, #d6e5d8);
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+  }
+
+  :root {
+    --bg-color: #fefbe9;
+    --text-color: #1c1c1c;
+    --box-color: #f0fdf4;
+    --box-hover: #e3faed;
+    --btn-bg: linear-gradient(to right, #4CAF50, #2e7d32);
+  }
+
+  body.dark-mode {
+    --bg-color: #1a1a1a;
+    --text-color: #f0e6d2;
+    --box-color: #2c2c2c;
+    --box-hover: #3a3a3a;
+    --btn-bg: linear-gradient(to right, #6d8b6d, #456b45);
+  }
+
+  body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition: background 0.5s ease, color 0.5s ease;
+  }
+
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .result-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 5% 40px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .result-box {
+    background: rgba(247, 246, 243, 0.95);
+    padding: 25px 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-width: 900px;
+    width: 100%;
+    margin-bottom: 30px;
+    animation: fadeInUp 0.5s ease both;
+  }
+
+  .result-box h3 {
+    font-size: 1.7rem;
+    margin-bottom: 10px;
+    color: #2c3e50;
+  }
+
+  .result-box p {
+    font-size: 16px;
+    color: #444;
+  }
+
+  @keyframes fadeInUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .remedy-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 25px;
+  }
+
+  .remedy-card {
+    background: var(--box-color);
+    border-radius: 20px;
+    padding: 18px 20px;
+    text-align: center;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, background 0.3s ease;
+    width: 260px;
+    animation: bubbleIn 0.6s ease forwards;
+    opacity: 0;
+  }
+
+  .remedy-card:hover {
+    transform: scale(1.05);
+    background: var(--box-hover);
+  }
+
+  @keyframes bubbleIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  @media (max-width: 600px) {
+    .remedy-card {
+      width: 90%;
+    }
+  }
+</style>
+
+<canvas id="leavesCanvas"></canvas>
+
+<div class="result-wrapper">
+  {% if dosha %}
+  <div class="result-box">
+    <h3>🌿 You may be <strong>{{ dosha }}</strong> dominant</h3>
+    <p>{{ tips }}</p>
+  </div>
+  {% endif %}
+
+  {% if remedies %}
+  <div class="result-box">
+    <h3>🪔 Ayurvedic Remedies for: <em>{{ user_text }}</em></h3>
+    <div class="remedy-grid">
+      {% for symptom, remedy in remedies.items() %}
+        <div class="remedy-card" style="animation-delay: {{ loop.index0 * 0.2 }}s">
+          <strong>{{ symptom.capitalize() }}:</strong>
+          <p>{{ remedy }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% else %}
+  <div class="result-box">
+    <p>No matching Ayurvedic remedies found. Try entering more specific or traditional symptom names.</p>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  const canvas = document.getElementById('leavesCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const leaves = [];
+  for (let i = 0; i < 30; i++) {
+    leaves.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: 20 + Math.random() * 20,
+      speed: 0.3 + Math.random() * 0.5,
+      sway: 0.3 + Math.random() * 0.5,
+      swayDir: Math.random() > 0.5 ? 1 : -1,
+      emoji: '🍃'
+    });
+  }
+
+  function drawLeaves() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '24px serif';
+    for (let leaf of leaves) {
+      ctx.globalAlpha = 0.3;
+      ctx.fillText(leaf.emoji, leaf.x, leaf.y);
+      ctx.globalAlpha = 1.0;
+      leaf.y += leaf.speed;
+      leaf.x += leaf.sway * leaf.swayDir;
+      if (leaf.y > canvas.height) {
+        leaf.y = -leaf.size;
+        leaf.x = Math.random() * canvas.width;
+      }
+      if (leaf.x > canvas.width || leaf.x < 0) {
+        leaf.swayDir *= -1;
+      }
+    }
+    requestAnimationFrame(drawLeaves);
+  }
+
+  drawLeaves();
+
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+  }
+</script>
+{% endblock %}

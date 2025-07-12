@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to right, #fefbe9, #e4f2dc);
+    position: relative;
+  }
+  :root {
+    --bg-color: #fefbe9;
+    --text-color: #1c1c1c;
+    --box-color: #fffef3;
+    --btn-bg: linear-gradient(to right, #4CAF50, #2e7d32);
+  }
+
+  body.dark-mode {
+    --bg-color: #1a1a1a;
+    --text-color: #f0e6d2;
+    --box-color: #2c2c2c;
+    --btn-bg: linear-gradient(to right, #6d8b6d, #456b45);
+  }
+
+  body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition: background 0.5s ease, color 0.5s ease;
+  }
+  .remedy-box,
+  .gallery-container {
+    background: var(--box-color);
+  }
+  .back-home-btn,
+  .btn-ayur {
+    background: var(--btn-bg);
+  }
+
+  .remedy-bg-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background: url("{{ url_for('static', filename='use23.jpeg') }}") no-repeat center center;
+    background-size: cover;
+    opacity: 0.15;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .remedy-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 60px 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .floating-leaf {
+    position: absolute;
+    font-size: 3rem;
+    opacity: 0.05;
+    animation: floatLeaf 12s linear infinite;
+    pointer-events: none;
+  }
+
+  .floating-leaf.leaf1 { top: 10%; left: 15%; animation-delay: 0s; }
+  .floating-leaf.leaf2 { top: 50%; left: 75%; animation-delay: 2s; }
+  .floating-leaf.leaf3 { top: 30%; left: 40%; animation-delay: 4s; }
+
+  @keyframes floatLeaf {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0); }
+  }
+
+  .remedy-box {
+    max-width: 800px;
+    background: #fffef3;
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    position: relative;
+    z-index: 1;
+    animation: fadeIn 0.8s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .remedy-box h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 3rem;
+    color: #7a3e0d;
+    text-align: center;
+    margin-bottom: 25px;
+    text-shadow: 1px 1px 2px #d6bb8f;
+    letter-spacing: 1px;
+  }
+
+  .remedy-box p {
+    font-size: 1.15rem;
+    color: #444;
+    line-height: 1.8;
+    margin-bottom: 25px;
+    text-align: justify;
+  }
+
+  .remedy-box ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding-left: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .remedy-box ul li {
+    background: #f9f9ed;
+    padding: 16px 22px;
+    border-left: 5px solid #6c9a56;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    font-size: 1.1rem;
+    color: #333;
+    transition: transform 0.4s ease, background 0.4s ease;
+    flex: 1 1 300px;
+    animation: floatInUp 0.8s ease forwards;
+    opacity: 0;
+    position: relative;
+  }
+
+  .remedy-box ul li:hover {
+    transform: scale(1.07) rotate(1deg);
+    background: #eefce9;
+  }
+
+  @keyframes floatInUp {
+    0% { transform: translateY(40px) scale(0.95); opacity: 0; }
+    50% { transform: translateY(-5px) scale(1.02); opacity: 0.7; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+  }
+
+  .back-home-btn {
+    display: inline-block;
+    background: linear-gradient(to right, #4CAF50, #2e7d32);
+    color: white;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .back-home-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  @media (max-width: 768px) {
+    .remedy-box {
+      padding: 30px 25px;
+    }
+
+    .remedy-box h1 {
+      font-size: 2.3rem;
+    }
+
+    .back-home-btn {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>
+
+<div class="remedy-bg-image"></div>
+<canvas id="leavesCanvas"></canvas>
+
+<div class="remedy-section">
+  <div class="floating-leaf leaf1">🍃</div>
+  <div class="floating-leaf leaf2">🍃</div>
+  <div class="floating-leaf leaf3">🍃</div>
+
+  <div class="remedy-box">
+    <h1>{{ data.title }}</h1>
+    <p>{{ data.description }}</p>
+    <ul>
+      {% for tip in data.tips %}
+        <li style="animation-delay: {{ loop.index * 0.3 }}s">{{ tip }}</li>
+      {% endfor %}
+    </ul>
+    <a href="/" class="back-home-btn">← Back to Home</a>
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById('leavesCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const leaves = [];
+  for (let i = 0; i < 30; i++) {
+    leaves.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: 20 + Math.random() * 20,
+      speed: 0.3 + Math.random() * 0.5,
+      sway: 0.3 + Math.random() * 0.5,
+      swayDir: Math.random() > 0.5 ? 1 : -1,
+      emoji: '🌱'
+    });
+  }
+
+  function drawLeaves() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '24px serif';
+    for (let leaf of leaves) {
+      ctx.globalAlpha = 0.3;
+      ctx.fillText(leaf.emoji, leaf.x, leaf.y);
+      ctx.globalAlpha = 1.0;
+      leaf.y += leaf.speed;
+      leaf.x += leaf.sway * leaf.swayDir;
+      if (leaf.y > canvas.height) {
+        leaf.y = -leaf.size;
+        leaf.x = Math.random() * canvas.width;
+      }
+      if (leaf.x > canvas.width || leaf.x < 0) {
+        leaf.swayDir *= -1;
+      }
+    }
+    requestAnimationFrame(drawLeaves);
+  }
+
+  drawLeaves();
+
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+</script>
+<script>
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,391 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit&display=swap');
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to bottom right, #fefbe9, #d6e5d8);
+  }
+
+  body {
+    position: relative;
+    animation: fadeIn 1s ease-in;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .floating-om {
+    position: absolute;
+    color: rgba(0, 0, 0, 0.08);
+    font-size: 3rem;
+    animation: floatOm 10s linear infinite;
+  }
+
+  @keyframes floatOm {
+    0% { transform: translateY(100vh); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(-100vh); opacity: 0; }
+  }
+
+  .top-bg-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: url("{{ url_for('static', filename='fi2.jpg') }}") no-repeat center top;
+    background-size: cover;
+    opacity: 0.08;
+    z-index: 0;
+    pointer-events: none;
+  }
+  :root {
+  --bg-color: #fefbe9;
+  --text-color: #1c1c1c;
+  --box-color: #fffef3;
+  --btn-bg: linear-gradient(to right, #4CAF50, #2e7d32);
+}
+
+body.dark-mode {
+  --bg-color: #1a1a1a;
+  --text-color: #f0e6d2;
+  --box-color: #2c2c2c;
+  --btn-bg: linear-gradient(to right, #6d8b6d, #456b45);
+}
+
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+  transition: background 0.5s ease, color 0.5s ease;
+}
+.remedy-box,
+.gallery-container {
+  background: var(--box-color);
+}
+.back-home-btn,
+.btn-ayur {
+  background: var(--btn-bg);
+}
+
+  .top-center-title {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    text-align: center;
+    z-index: 2;
+  }
+
+  .ayurveda-heading {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #8B4513;
+    background: linear-gradient(to right, #d2691e, #8b4513);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    justify-content: center;
+  }
+
+  .paramarsh {
+    color: #5e2c04;
+    font-size: 2rem;
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+
+  .main-center-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 250px);
+    position: relative;
+    z-index: 2;
+  }
+
+  .sanskrit-center {
+    text-align: center;
+  }
+
+  .sanskrit-shloka {
+    font-family: 'Noto Serif Devanagari', serif;
+    font-size: 2.2rem;
+    color: #083e12;
+    letter-spacing: 1px;
+    line-height: 1.6;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  .button-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+    z-index: 2;
+    position: relative;
+  }
+
+  .btn-ayur {
+    padding: 14px 28px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 30px;
+    text-decoration: none;
+    color: white;
+    border: 2px solid transparent;
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+  }
+
+  .btn-ayur.consult {
+    background: linear-gradient(to right, #2ecc71, #27ae60) padding-box,
+                linear-gradient(120deg, #b4e197, #2ecc71) border-box;
+  }
+
+  .btn-ayur.yoga {
+    background: linear-gradient(to right, #3498db, #2980b9) padding-box,
+                linear-gradient(120deg, #c4dfff, #3498db) border-box;
+  }
+
+  .btn-ayur:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .gallery-container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px 0;
+    overflow-x: auto;
+    white-space: nowrap;
+    z-index: 10;
+  }
+
+  .scroll-wrapper {
+    display: flex;
+    gap: 20px;
+    padding: 10px 40px;
+    justify-content: center;
+  }
+
+  .card {
+    min-width: 220px;
+    max-width: 240px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .card img {
+    width: 100%;
+    display: block;
+    border-radius: 12px;
+  }
+
+  .card:hover {
+    transform: scale(1.05);
+  }
+
+  .card::after {
+    content: attr(data-title);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 10px;
+    font-size: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+    text-align: center;
+  }
+
+  .card:hover::after {
+    opacity: 1;
+  }
+</style>
+
+<canvas id="leavesCanvas"></canvas>
+<div class="floating-om" style="left: 10%; top: 90%;">ॐ</div>
+<div class="floating-om" style="left: 85%; top: 95%; animation-delay: 3s;">ॐ</div>
+
+<!-- NEW: Faded Background Image -->
+<div class="top-bg-wrapper"></div>
+
+<div class="top-center-title">
+  <h1 class="ayurveda-heading">
+    <span class="leaf">🍃</span> <span class="ayu">आयुर्वेद</span>
+    <span class="paramarsh">Paramarsh</span>
+  </h1>
+</div>
+<!-- 🌗 Theme Toggle Button -->
+<button id="themeToggle" title="Toggle Theme">🌓</button>
+
+<style>
+#themeToggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #fff7e6;
+  border: 2px solid #444;
+  color: #222;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 999;
+  transition: all 0.3s ease;
+}
+body.dark-mode #themeToggle {
+  background: #333;
+  color: #eee;
+  border-color: #eee;
+}
+.ayurveda-heading .ayu {
+  font-family: 'Tiro Devanagari Sanskrit', serif;
+  font-size: 3.6rem;
+  background: linear-gradient(to right, #a0522d, #8b4513);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+</style>
+
+<div class="main-center-wrapper">
+  <div class="sanskrit-center">
+    <h2 class="sanskrit-shloka" id="shloka-box">
+      आरोग्यं परमं भाग्यं <br> स्वास्थ्यं सर्वार्थसाधनम्
+    </h2>
+  </div>
+
+  <div class="button-row centered-buttons">
+    <a href="/quiz" class="btn-ayur consult">🩺 Start Consultation</a>
+    <a href="/videos" class="btn-ayur yoga">Yoga & Meditation</a>
+  </div>
+</div>
+
+<div class="gallery-container">
+  <div class="scroll-wrapper">
+    <a href="/remedy/digestion" class="card" data-title="Boosts Digestion">
+      <img src="{{ url_for('static', filename='use5.jpg') }}" alt="Boost Digestion">
+    </a>
+    <a href="/remedy/antibiotic" class="card" data-title="Natural Antibiotic">
+      <img src="{{ url_for('static', filename='use7.jpg') }}" alt="Natural Antibiotic">
+    </a>
+    <a href="/remedy/detox" class="card" data-title="Detox Herb">
+      <img src="{{ url_for('static', filename='use13.jpg') }}" alt="Detox Herb">
+    </a>
+    <a href="/remedy/antioxidant" class="card" data-title="Rich in Antioxidants">
+      <img src="{{ url_for('static', filename='use12.webp') }}" alt="Antioxidants">
+    </a>
+    <a href="/remedy/immunity" class="card" data-title="Boosts Immunity">
+      <img src="{{ url_for('static', filename='use9.webp') }}" alt="Immunity Booster">
+    </a>
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById('leavesCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const leaves = [];
+  for (let i = 0; i < 30; i++) {
+    leaves.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: 20 + Math.random() * 20,
+      speed: 0.3 + Math.random() * 0.5,
+      sway: 0.3 + Math.random() * 0.5,
+      swayDir: Math.random() > 0.5 ? 1 : -1,
+      emoji: '🍃'
+    });
+  }
+
+  function drawLeaves() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '24px serif';
+    for (let leaf of leaves) {
+      ctx.globalAlpha = 0.3;
+      ctx.fillText(leaf.emoji, leaf.x, leaf.y);
+      ctx.globalAlpha = 1.0;
+      leaf.y += leaf.speed;
+      leaf.x += leaf.sway * leaf.swayDir;
+      if (leaf.y > canvas.height) {
+        leaf.y = -leaf.size;
+        leaf.x = Math.random() * canvas.width;
+      }
+      if (leaf.x > canvas.width || leaf.x < 0) {
+        leaf.swayDir *= -1;
+      }
+    }
+    requestAnimationFrame(drawLeaves);
+  }
+
+  drawLeaves();
+
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+  
+</script>
+<script>
+  const body = document.body;
+  const toggleBtn = document.getElementById('themeToggle');
+
+  // Apply stored theme on load
+  if (localStorage.getItem('theme') === 'dark') {
+    body.classList.add('dark-mode');
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    const newTheme = body.classList.contains('dark-mode') ? 'dark' : 'light';
+    localStorage.setItem('theme', newTheme);
+  });
+</script>
+
+{% endblock %}

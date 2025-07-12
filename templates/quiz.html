@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ayurveda Paramarsh - Search Symptoms</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom right, #fefbe9, #d6e5d8);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('/static/fi.webp') no-repeat center center fixed;
+      background-size: cover;
+      opacity: 0.10;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    :root {
+      --bg-color: #fefbe9;
+      --text-color: #1c1c1c;
+      --box-color: #fffef3;
+      --btn-bg: linear-gradient(to right, #4CAF50, #2e7d32);
+    }
+
+    body.dark-mode {
+      --bg-color: #1a1a1a;
+      --text-color: #f0e6d2;
+      --box-color: #2c2c2c;
+      --btn-bg: linear-gradient(to right, #6d8b6d, #456b45);
+    }
+
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .search-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .search-section h2 {
+      font-size: 3rem;
+      color: #1e3932;
+      font-weight: 600;
+      margin-bottom: 30px;
+    }
+
+    .search-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+    }
+
+    .input-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 540px;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      padding: 18px 50px 18px 50px;
+      font-size: 18px;
+      border-radius: 20px;
+      border: none;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+      color: #2c3e50;
+      transition: all 0.3s ease;
+    }
+
+    .input-wrapper input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.2);
+    }
+
+    .input-wrapper label {
+      position: absolute;
+      left: 50px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
+      pointer-events: none;
+      font-size: 16px;
+      transition: 0.3s ease;
+    }
+
+    .input-wrapper input:focus + label,
+    .input-wrapper input:not(:placeholder-shown) + label {
+      top: 8px;
+      left: 46px;
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 0 6px;
+      border-radius: 6px;
+      color: #27ae60;
+    }
+
+    .input-wrapper .icon {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      opacity: 0.6;
+    }
+
+    .search-form button {
+      padding: 14px 32px;
+      font-size: 18px;
+      background: linear-gradient(to right, #27ae60, #1e8449);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s;
+      box-shadow: 0 6px 16px rgba(39, 174, 96, 0.25);
+    }
+
+    .search-form button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30, 132, 73, 0.4);
+    }
+
+    .routine-section {
+      max-width: 700px;
+      margin: 50px auto;
+      padding: 30px;
+      background: var(--box-color);
+      border-radius: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+    .routine-section h3 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #1e3932;
+    }
+    .routine-section ul {
+      list-style-type: '🌿 ';
+      padding-left: 20px;
+    }
+    .routine-section ul li {
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="leavesCanvas"></canvas>
+
+<div class="search-section">
+  <h2>Search Your Symptoms</h2>
+  <form class="search-form" method="POST" action="/remedies">
+    <div class="input-wrapper">
+      <span class="icon">🔍</span>
+      <input type="text" name="symptoms" id="symptomInput" placeholder=" " required>
+      <label for="symptomInput">e.g. joint pain, dry skin, anxiety...</label>
+    </div>
+    <button type="submit">Get Remedies</button>
+  </form>
+</div>
+
+<div class="routine-section">
+  <h3>🌞 Daily Ayurvedic Routine</h3>
+  <ul>
+    <li><strong>Morning:</strong> Wake before sunrise, drink warm water, oil pulling, gentle stretching.</li>
+    <li><strong>Yoga:</strong> Practice 20–30 mins of yoga & pranayama (e.g., Surya Namaskar, Nadi Shodhana).</li>
+    <li><strong>Diet:</strong> Light, warm breakfast (like porridge), seasonal lunch, early dinner before 8PM.</li>
+    <li><strong>Evening:</strong> Herbal tea (e.g., Tulsi/Ginger), quiet time, avoid screen use before bed.</li>
+    <li><strong>Night:</strong> Warm bath, foot massage with oil, sleep by 10 PM for deep rest.</li>
+  </ul>
+</div>
+
+<script>
+  const canvas = document.getElementById('leavesCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const leaves = [];
+  for (let i = 0; i < 30; i++) {
+    leaves.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: 20 + Math.random() * 20,
+      speed: 0.3 + Math.random() * 0.5,
+      sway: 0.3 + Math.random() * 0.5,
+      swayDir: Math.random() > 0.5 ? 1 : -1,
+      emoji: '🍃'
+    });
+  }
+
+  function drawLeaves() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '24px serif';
+    for (let leaf of leaves) {
+      ctx.globalAlpha = 0.3;
+      ctx.fillText(leaf.emoji, leaf.x, leaf.y);
+      ctx.globalAlpha = 1.0;
+      leaf.y += leaf.speed;
+      leaf.x += leaf.sway * leaf.swayDir;
+      if (leaf.y > canvas.height) {
+        leaf.y = -leaf.size;
+        leaf.x = Math.random() * canvas.width;
+      }
+      if (leaf.x > canvas.width || leaf.x < 0) {
+        leaf.swayDir *= -1;
+      }
+    }
+    requestAnimationFrame(drawLeaves);
+  }
+
+  drawLeaves();
+
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+</script>
+<script>
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+  }
+</script>
+
+</body>
+</html>

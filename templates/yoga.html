@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Yoga & Meditation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom right, #fefbe9, #d6e5d8);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .main-content {
+      position: relative;
+      z-index: 2;
+      padding: 60px 40px;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      color: #1e3932;
+    }
+
+    .search-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .search-box input[type="text"] {
+      width: 340px;
+      max-width: 90%;
+      padding: 12px 18px;
+      font-size: 1rem;
+      border: 2px solid #1e3932;
+      border-radius: 25px;
+      outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      background: #ffffff;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .search-box input[type="text"]:focus {
+      border-color: #145c4a;
+      box-shadow: 0 0 10px rgba(20, 92, 74, 0.3);
+    }
+
+    .search-box button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 25px;
+      background-color: #1e3932;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s;
+    }
+
+    .search-box button:hover {
+      background-color: #145c4a;
+      transform: scale(1.05);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .video-card {
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .video-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .video-card iframe {
+      width: 100%;
+      height: 200px;
+    }
+
+    .video-info {
+      padding: 10px 15px;
+    }
+
+    .video-info h4 {
+      margin: 5px 0;
+      color: #1e3932;
+    }
+
+    .video-info p {
+      color: #444;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="leavesCanvas"></canvas>
+
+  <div class="main-content">
+    <h2>Yoga & Meditation Videos</h2>
+
+    <form method="POST" class="search-box">
+      <input type="text" name="search_query" placeholder="Search Yoga or Meditation..." value="{{ query }}">
+      <button type="submit">🔍 Search</button>
+    </form>
+
+    <div class="grid">
+      {% for video in videos %}
+      <div class="video-card">
+        <iframe src="https://www.youtube.com/embed/{{ video.video_id }}" allowfullscreen></iframe>
+        <div class="video-info">
+          <h4>{{ video.title }}</h4>
+          <p>{{ video.description[:100] }}...</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('leavesCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const leaves = [];
+    for (let i = 0; i < 30; i++) {
+      leaves.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: 20 + Math.random() * 20,
+        speed: 0.3 + Math.random() * 0.5,
+        sway: 0.3 + Math.random() * 0.5,
+        swayDir: Math.random() > 0.5 ? 1 : -1,
+        emoji: '🌿'
+      });
+    }
+
+    function drawLeaves() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.font = '24px serif';
+      for (let leaf of leaves) {
+        ctx.globalAlpha = 0.3;
+        ctx.fillText(leaf.emoji, leaf.x, leaf.y);
+        ctx.globalAlpha = 1.0;
+        leaf.y += leaf.speed;
+        leaf.x += leaf.sway * leaf.swayDir;
+        if (leaf.y > canvas.height) {
+          leaf.y = -leaf.size;
+          leaf.x = Math.random() * canvas.width;
+        }
+        if (leaf.x > canvas.width || leaf.x < 0) {
+          leaf.swayDir *= -1;
+        }
+      }
+      requestAnimationFrame(drawLeaves);
+    }
+
+    drawLeaves();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+
+</body>
+</html>

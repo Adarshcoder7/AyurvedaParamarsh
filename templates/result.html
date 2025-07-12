@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Your Ayurvedic Dosha: <span style="color:green">{{ dosha }}</span></h2>
+
+<h3>🌿 Remedies:</h3>
+<ul>
+  {% for symptom, remedy in remedies.items() %}
+    <li><strong>{{ symptom }}:</strong> {{ remedy }}</li>
+  {% endfor %}
+</ul>
+
+<br>
+<!-- ✅ Daily Routine Button -->
+<a href="/routine/{{ dosha }}">
+  <button style="margin-top: 10px;">🌅 View Daily Routine</button>
+</a>
+
+<br><br>
+<a href="/quiz">🔙 Go back</a>
+{% endblock %}
